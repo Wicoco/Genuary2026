@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>SMALL ZINE — VICTOR FERNEL</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  @page { size: A5; margin: 0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Share Tech Mono',monospace; background:#fff; }
+
+  .page {
+    width: 148mm; height: 210mm;
+    page-break-after: always;
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+
+  /* ── PAGE 1: COVER ── */
+  .p-cover {
+    background: #020408;
+    color: #00ffcc;
+    justify-content: center; align-items: center;
+  }
+  .cover-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,204,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,204,.06) 1px, transparent 1px);
+    background-size: 8mm 8mm;
+  }
+  .cover-scanlines {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.4) 2px,rgba(0,0,0,.4) 3px);
+  }
+  .cover-content { position: relative; z-index: 2; text-align: center; padding: 8mm; }
+  .cover-eyebrow { font-size: 5.5pt; letter-spacing: .25em; color: rgba(0,255,204,.55); margin-bottom: 4mm; }
+  .cover-title { font-family:'Bebas Neue',sans-serif; font-size: 42pt; letter-spacing:.05em; line-height:.9;
+    color:#00ffcc; text-shadow: 0 0 15px rgba(0,255,204,.6), 0 0 40px rgba(0,255,204,.3); margin-bottom: 3mm; }
+  .cover-title span { color:#ff0066; text-shadow: 0 0 15px rgba(255,0,102,.6); }
+  .cover-sub { font-size: 7pt; letter-spacing:.2em; color: rgba(0,255,204,.7); margin-bottom: 8mm; }
+  .cover-divider { width: 60mm; height: 1px; background: linear-gradient(90deg, transparent, #00ffcc, transparent); margin: 4mm auto; }
+  .cover-desc { font-size: 6pt; letter-spacing:.1em; color: rgba(0,255,204,.5); line-height: 1.7; }
+  .cover-corner {
+    position: absolute; width: 10mm; height: 10mm;
+    border-color: rgba(0,255,204,.5); border-style: solid;
+  }
+  .cc-tl { top:4mm; left:4mm; border-width: 1px 0 0 1px; }
+  .cc-tr { top:4mm; right:4mm; border-width: 1px 1px 0 0; }
+  .cc-bl { bottom:4mm; left:4mm; border-width: 0 0 1px 1px; }
+  .cc-br { bottom:4mm; right:4mm; border-width: 0 1px 1px 0; }
+
+  /* ── PAGE 2: BIO ── */
+  .p-bio { background: #f4f0e6; color: #18140e; padding: 10mm; }
+  .bio-header { border-bottom: 2px solid #18140e; padding-bottom: 3mm; margin-bottom: 6mm; }
+  .bio-tag { font-size: 5pt; letter-spacing:.25em; color: #c8200a; margin-bottom:1mm; }
+  .bio-name { font-family:'Bebas Neue',sans-serif; font-size: 28pt; letter-spacing:.03em; line-height:1; color:#18140e; }
+  .bio-role { font-size: 6.5pt; letter-spacing:.12em; color:#4a4438; margin-top:1mm; }
+  .bio-body { font-size: 7pt; line-height:1.75; color:#4a4438; margin-bottom:5mm; }
+  .bio-body strong { color:#18140e; font-weight:700; }
+  .bio-stack { margin-top:5mm; }
+  .bio-stack-title { font-size:5pt; letter-spacing:.2em; color:#c8200a; margin-bottom:2mm; }
+  .bio-pills { display:flex; flex-wrap:wrap; gap:1.5mm; }
+  .pill { font-size:5pt; letter-spacing:.1em; border:1px solid #ccc4b0; padding:1mm 2mm; color:#4a4438; }
+
+  /* ── PAGE 3: CONTACT ── */
+  .p-contact { background: #020408; color: #00ffcc; padding: 10mm; }
+  .contact-grid { position:absolute; inset:0; background-image: linear-gradient(rgba(0,255,204,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,204,.04) 1px,transparent 1px); background-size:6mm 6mm; }
+  .contact-content { position:relative; z-index:2; }
+  .section-label { font-size:5pt; letter-spacing:.3em; color:#ff0066; margin-bottom:4mm; }
+  .contact-item { margin-bottom:5mm; border-left: 2px solid rgba(0,255,204,.4); padding-left:3mm; }
+  .ci-type { font-size:4.5pt; letter-spacing:.2em; color:rgba(0,255,204,.5); margin-bottom:1mm; }
+  .ci-value { font-size:8.5pt; letter-spacing:.08em; color:#00ffcc; }
+  .ci-value a { color:#ffee00; text-decoration:none; }
+  .contact-qr-placeholder { width:28mm; height:28mm; border:1px solid rgba(0,255,204,.3); display:flex; align-items:center; justify-content:center; font-size:4.5pt; letter-spacing:.15em; color:rgba(0,255,204,.4); margin-top:4mm; }
+
+  /* ── PAGE 4: GENERATIVE ART ── */
+  .p-genart { background: #f4f0e6; padding: 10mm; }
+  .ga-title { font-family:'Bebas Neue',sans-serif; font-size:22pt; color:#18140e; letter-spacing:.03em; line-height:1; margin-bottom:2mm; }
+  .ga-title span { color:#c8200a; }
+  .ga-body { font-size:6.5pt; line-height:1.8; color:#4a4438; margin-bottom:4mm; }
+  .ga-body em { color:#18140e; font-style:normal; font-weight:700; }
+  .ga-quote { border-left:3px solid #c8200a; padding:2mm 3mm; margin:4mm 0; font-style:italic; font-size:7pt; color:#4a4438; line-height:1.6; }
+  .ga-list { list-style:none; margin-top:3mm; }
+  .ga-list li { font-size:6pt; line-height:1.7; color:#4a4438; padding-left:3mm; }
+  .ga-list li::before { content:'▶ '; color:#c8200a; font-size:4pt; }
+
+  /* ── PAGE 5: GENUARY SKETCHES ── */
+  .p-sketches { background: #020408; color: #00ffcc; padding: 8mm 10mm; }
+  .p-sketches .contact-grid { position:absolute; inset:0; background-image: linear-gradient(rgba(0,255,204,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,204,.03) 1px,transparent 1px); background-size:5mm 5mm; }
+  .sk-content { position:relative; z-index:2; }
+  .sk-title { font-family:'Bebas Neue',sans-serif; font-size:22pt; color:#00ffcc; letter-spacing:.04em; margin-bottom:4mm; text-shadow:0 0 10px rgba(0,255,204,.4); }
+  .sk-title span { color:#ff0066; }
+  .sk-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5mm; }
+  .sk-item { border:1px solid rgba(0,255,204,.2); padding:1.5mm; }
+  .sk-num { font-size:4pt; color:#ff0066; letter-spacing:.15em; margin-bottom:.5mm; }
+  .sk-name { font-size:5.5pt; color:#00ffcc; letter-spacing:.08em; }
+  .sk-prompt { font-size:4pt; color:rgba(0,255,204,.45); margin-top:.3mm; line-height:1.4; }
+
+  /* ── PAGE 6: FAVOURITE SKETCH ── */
+  .p-fav { background: #020408; padding: 10mm; }
+  .fav-grid { position:absolute; inset:0; background-image: linear-gradient(rgba(255,0,102,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,0,102,.03) 1px,transparent 1px); background-size:7mm 7mm; }
+  .fav-content { position:relative; z-index:2; }
+  .fav-eyebrow { font-size:4.5pt; letter-spacing:.25em; color:rgba(0,255,204,.5); margin-bottom:2mm; }
+  .fav-title { font-family:'Bebas Neue',sans-serif; font-size:32pt; color:#ff0066; letter-spacing:.04em; line-height:.9; margin-bottom:1mm; text-shadow:0 0 12px rgba(255,0,102,.5); }
+  .fav-day { font-size:6pt; color:rgba(0,255,204,.6); letter-spacing:.15em; margin-bottom:4mm; }
+  .fav-body { font-size:6.5pt; line-height:1.8; color:rgba(224,240,255,.75); }
+  .fav-body em { color:#ffee00; font-style:normal; }
+  .fav-visual { width:100%; height:30mm; border:1px solid rgba(255,0,102,.3); margin:4mm 0; display:flex; align-items:center; justify-content:center; background:rgba(255,0,102,.04); }
+  .fav-visual-inner { font-size:4.5pt; color:rgba(255,0,102,.4); letter-spacing:.2em; }
+
+  /* ── PAGE 7: ABOUT GENERATIVE / MANIFESTO ── */
+  .p-manifesto { background: #18140e; padding:10mm; color:#f4f0e6; }
+  .mf-bar { width:100%; height:3px; background:linear-gradient(90deg,#ff0066,#00ffcc,#ffee00); margin-bottom:6mm; }
+  .mf-title { font-family:'Bebas Neue',sans-serif; font-size:26pt; letter-spacing:.04em; line-height:.9; margin-bottom:3mm; }
+  .mf-title em { color:#00ffcc; font-style:normal; }
+  .mf-body { font-size:6.5pt; line-height:1.8; color:rgba(244,240,230,.7); }
+  .mf-body strong { color:#f4f0e6; }
+  .mf-signature { margin-top:6mm; font-size:5pt; letter-spacing:.2em; color:rgba(0,255,204,.6); }
+
+  /* ── PAGE 8: BACK COVER ── */
+  .p-back { background: #020408; justify-content:center; align-items:center; }
+  .back-content { position:relative; z-index:2; text-align:center; padding:8mm; }
+  .back-logo { font-family:'Bebas Neue',sans-serif; font-size:38pt; color:#00ffcc; letter-spacing:.06em; text-shadow:0 0 20px rgba(0,255,204,.5); }
+  .back-logo span { color:#ff0066; }
+  .back-year { font-size:6pt; letter-spacing:.3em; color:rgba(0,255,204,.5); margin-bottom:6mm; }
+  .back-url { font-size:7pt; letter-spacing:.1em; color:#ffee00; margin:4mm 0; }
+  .back-line { width:50mm; height:1px; background:rgba(0,255,204,.3); margin:3mm auto; }
+  .back-copy { font-size:5pt; letter-spacing:.12em; color:rgba(0,255,204,.3); }
+  .back-diamond { font-size:18pt; color:#ff0066; margin:3mm 0; opacity:.6; }
+
+  @media print {
+    .page { page-break-after: always; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── PAGE 1: COVER ── -->
+<div class="page p-cover">
+  <div class="cover-grid"></div>
+  <div class="cover-scanlines"></div>
+  <div class="cc-tl cover-corner"></div>
+  <div class="cc-tr cover-corner"></div>
+  <div class="cc-bl cover-corner"></div>
+  <div class="cc-br cover-corner"></div>
+  <div class="cover-content">
+    <div class="cover-eyebrow">SMALL ZINE — ISSUE 01 — GENUARY 2026</div>
+    <div class="cover-title">VIC<span>TOR</span><br>FER<span>NEL</span></div>
+    <div class="cover-sub">GENERATIVE ART / P5.JS / CREATIVE CODING</div>
+    <div class="cover-divider"></div>
+    <div class="cover-desc">
+      31 SKETCHES &nbsp;·&nbsp; JANUARY 2026<br>
+      IIM DIGITAL SCHOOL &nbsp;·&nbsp; PARIS
+    </div>
+  </div>
+</div>
+
+<!-- ── PAGE 2: BIO ── -->
+<div class="page p-bio">
+  <div class="bio-header">
+    <div class="bio-tag">// ABOUT THE AUTHOR</div>
+    <div class="bio-name">VICTOR FERNEL</div>
+    <div class="bio-role">CHEF DE PROJET DIGITAL &nbsp;·&nbsp; IIM DIGITAL SCHOOL &nbsp;·&nbsp; 4ème ANNÉE</div>
+  </div>
+  <div class="bio-body">
+    <p>Étudiant en <strong>Chef de Projet Digital</strong> à l'IIM Digital School (Paris), actuellement en alternance à l'<strong>INSERM</strong> (Pôle SI de l'évaluation) comme assistant fonctionnel & développeur graphique sur le système SOLARIS/EVA3.</p>
+    <br>
+    <p>En transition vers un <strong>double diplôme Mastère IIM/ESILV</strong> à partir de septembre 2026, avec un rythme 1 semaine école / 3 semaines entreprise.</p>
+    <br>
+    <p>Passionné de <strong>creative coding</strong>, de hardware et de jeu vidéo. Ce zine documente mon mois de Genuary 2026 — 31 jours, 31 prompts génératifs, 31 sketches en p5.js avec une direction artistique <em>cyberpunk</em>.</p>
+  </div>
+  <div class="bio-stack">
+    <div class="bio-stack-title">// STACK TECHNIQUE</div>
+    <div class="bio-pills">
+      <span class="pill">JavaScript</span><span class="pill">P5.JS</span><span class="pill">Python</span>
+      <span class="pill">Node.js</span><span class="pill">GLSL</span><span class="pill">MySQL</span>
+      <span class="pill">MongoDB</span><span class="pill">AppSheet</span><span class="pill">Google Apps Script</span>
+      <span class="pill">Shopify</span><span class="pill">WordPress</span><span class="pill">GitLab</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── PAGE 3: CONTACT ── -->
+<div class="page p-contact">
+  <div class="contact-grid"></div>
+  <div class="contact-content">
+    <div class="section-label">// CONTACT &amp; LINKS</div>
+
+    <div class="contact-item">
+      <div class="ci-type">EMAIL</div>
+      <div class="ci-value">victor.fernel@[à compléter]</div>
+    </div>
+
+    <div class="contact-item">
+      <div class="ci-type">GITHUB</div>
+      <div class="ci-value"><a>github.com/[à compléter]</a></div>
+    </div>
+
+    <div class="contact-item">
+      <div class="ci-type">ÉCOLE</div>
+      <div class="ci-value">IIM Digital School, Paris</div>
+    </div>
+
+    <div class="contact-item">
+      <div class="ci-type">GENUARY SITE</div>
+      <div class="ci-value"><a>[lien live site à héberger]</a></div>
+    </div>
+
+    <div class="contact-item">
+      <div class="ci-type">LOCALISATION</div>
+      <div class="ci-value">Chaville, Île-de-France</div>
+    </div>
+
+    <div class="contact-qr-placeholder">
+      QR CODE<br>→ SITE
+    </div>
+  </div>
+</div>
+
+<!-- ── PAGE 4: GENERATIVE ART ── -->
+<div class="page p-genart">
+  <div class="ga-title">L'ART <span>GÉNÉRATIF</span></div>
+  <div class="ga-body">
+    L'art génératif désigne toute oeuvre produite <em>en partie ou totalement par un système autonome</em> — un algorithme, un automate, un ensemble de règles que l'artiste définit et laisse s'exécuter.
+    <br><br>
+    Contrairement à l'IA générative qui produit du contenu par imitation statistique, l'art génératif <em>procède par règles explicites</em> — bruit de Perlin, L-systems, automates cellulaires, équations différentielles, shaders GLSL. Chaque ligne de code est une décision esthétique.
+  </div>
+  <div class="ga-quote">
+    "La contrainte est le point de départ. Un prompt qui dit 'une forme, une couleur' te force à trouver la beauté dans la limitation plutôt que de te cacher derrière la complexité."
+  </div>
+  <ul class="ga-list">
+    <li>Vera Molnár — grilles qui dévient systématiquement</li>
+    <li>Tyler Hobbs — champs de flux (Fidenza)</li>
+    <li>Manolo Gamboa Naon — chaos saturé</li>
+    <li>Rosa Menkman — théorie du glitch</li>
+  </ul>
+</div>
+
+<!-- ── PAGE 5: SKETCHES LIST ── -->
+<div class="page p-sketches">
+  <div class="contact-grid"></div>
+  <div class="sk-content">
+    <div class="sk-title">31 <span>SKETCHES</span></div>
+    <div class="sk-grid">
+      <div class="sk-item"><div class="sk-num">DAY 01</div><div class="sk-name">LIQUID DROP</div><div class="sk-prompt">One color, one shape</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 02</div><div class="sk-name">ORBITAL SYSTEM</div><div class="sk-prompt">12 principles anim.</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 03</div><div class="sk-name">CRYSTAL GROWTH</div><div class="sk-prompt">Fibonacci forever</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 04</div><div class="sk-name">LOWRES TERRAIN</div><div class="sk-prompt">Lowres</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 05</div><div class="sk-name">STORM VORTEX</div><div class="sk-prompt">Write without font</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 06</div><div class="sk-name">LIGHTS ON/OFF</div><div class="sk-prompt">Lights on/off</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 07</div><div class="sk-name">MAGNETIC FIELD</div><div class="sk-prompt">Boolean algebra</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 08</div><div class="sk-name">DEEP SEA</div><div class="sk-prompt">A City</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 09</div><div class="sk-name">CYCLIC AUTOMATON</div><div class="sk-prompt">Crazy automaton</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 10</div><div class="sk-name">SPIDER WEB</div><div class="sk-prompt">Polar coordinates</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 11</div><div class="sk-name">CODE RAIN</div><div class="sk-prompt">Quine</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 12</div><div class="sk-name">LAVA CELLS</div><div class="sk-prompt">Boxes only</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 13</div><div class="sk-name">BLACK HOLE</div><div class="sk-prompt">Self portrait</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 14</div><div class="sk-name">TRUCHET TILES</div><div class="sk-prompt">Everything fits</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 15</div><div class="sk-name">WORMHOLE</div><div class="sk-prompt">Invisible object</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 16</div><div class="sk-name">ORDER → CHAOS</div><div class="sk-prompt">Order and disorder</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 17</div><div class="sk-name">ISLAMIC STARS</div><div class="sk-prompt">Wallpaper group</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 18</div><div class="sk-name">LIGHTNING</div><div class="sk-prompt">Unexpected path</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 19</div><div class="sk-name">RULE 110</div><div class="sk-prompt">16×16</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 20</div><div class="sk-name">LISSAJOUS</div><div class="sk-prompt">One line</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 21</div><div class="sk-name">SOLAR FLARE</div><div class="sk-prompt">Bauhaus Poster</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 22</div><div class="sk-name">MOUNTAIN TOPO</div><div class="sk-prompt">Pen plotter ready</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 23</div><div class="sk-name">TRANSPARENCY</div><div class="sk-prompt">Transparency</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 24</div><div class="sk-name">KALEIDOSCOPE</div><div class="sk-prompt">Perfectionist</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 25</div><div class="sk-name">MERCURY DROPS</div><div class="sk-prompt">Organic Geometry</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 26</div><div class="sk-name">FRACTAL TREE</div><div class="sk-prompt">Recursive Grids</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 27</div><div class="sk-name">SUPERNOVA</div><div class="sk-prompt">Lifeform</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 28</div><div class="sk-name">CRYSTAL CSS</div><div class="sk-prompt">No canvas</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 29</div><div class="sk-name">FLUID VORTEX</div><div class="sk-prompt">Genetic evolution</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 30</div><div class="sk-name">AURORA BOREALIS</div><div class="sk-prompt">Not a bug</div></div>
+      <div class="sk-item"><div class="sk-num">DAY 31</div><div class="sk-name">GLSL SHADER</div><div class="sk-prompt">GLSL day</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PAGE 6: FAVOURITE SKETCH ── -->
+<div class="page p-fav">
+  <div class="fav-grid"></div>
+  <div class="fav-content">
+    <div class="fav-eyebrow">// MON SKETCH PRÉFÉRÉ</div>
+    <div class="fav-title">BLACK<br>HOLE</div>
+    <div class="fav-day">DAY 13 &nbsp;·&nbsp; PROMPT: "SELF PORTRAIT"</div>
+    <div class="fav-body">
+      Le prompt demandait un autoportrait. J'ai rendu ça comme un <em>trou noir</em> — un objet dont on ne peut rien voir directement, uniquement perceptible par son effet sur ce qui l'entoure.
+      <br><br>
+      Le disque d'accrétion montre le vrai <em>décalage Doppler</em>: bleu à gauche (matière s'approchant), rouge à droite (matière s'éloignant). Les jets relativistes partent des pôles en violet.
+      <br><br>
+      C'est le portrait le plus honnête que je pouvais faire.
+    </div>
+    <div class="fav-visual">
+      <div class="fav-visual-inner">[ ACCRETION DISK VISUALIZATION ]</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PAGE 7: MANIFESTO ── -->
+<div class="page p-manifesto">
+  <div class="mf-bar"></div>
+  <div class="mf-title">CODE<br>AS <em>ART</em></div>
+  <div class="mf-body">
+    L'art génératif n'est pas de l'IA. Ce n'est pas une boîte noire qui produit des images par imitation. C'est l'<strong>inverse</strong>: chaque comportement est explicitement codé, chaque aléatoire est contrôlé, chaque émergence est voulue.
+    <br><br>
+    <strong>Genuary</strong> est une contrainte volontaire — 31 prompts en 31 jours. La contrainte force l'invention. Sans limites, on reproduit ce qu'on connaît. Avec une contrainte absurde comme "une couleur, une forme", on est obligé de trouver quelque chose de réellement nouveau.
+    <br><br>
+    Ce projet est entièrement en <strong>p5.js</strong>. Pas de générateur d'images, pas de modèle pré-entraîné. Du code JavaScript qui s'exécute dans un navigateur et produit quelque chose qui n'existait pas avant.
+    <br><br>
+    La direction artistique est <strong>cyberpunk</strong> — Dark, neon, formes pures. Parce que le cyberpunk, c'est aussi l'esthétique du code: des systèmes complexes qui produisent de la beauté dans l'obscurité.
+  </div>
+  <div class="mf-signature">
+    — VICTOR FERNEL &nbsp;·&nbsp; IIM DIGITAL SCHOOL &nbsp;·&nbsp; 2026
+  </div>
+</div>
+
+<!-- ── PAGE 8: BACK COVER ── -->
+<div class="page p-back">
+  <div class="cover-grid"></div>
+  <div class="cover-scanlines"></div>
+  <div class="cc-tl cover-corner"></div>
+  <div class="cc-tr cover-corner"></div>
+  <div class="cc-bl cover-corner"></div>
+  <div class="cc-br cover-corner"></div>
+  <div class="back-content">
+    <div class="back-diamond">◆</div>
+    <div class="back-logo">GEN<span>26</span></div>
+    <div class="back-year">GENUARY 2026</div>
+    <div class="back-line"></div>
+    <div class="back-url">[URL DU SITE À COMPLÉTER]</div>
+    <div class="back-line"></div>
+    <div class="back-copy">
+      VICTOR FERNEL &nbsp;·&nbsp; IIM DIGITAL SCHOOL<br>
+      CREATIVE CODING &nbsp;·&nbsp; P5.JS &nbsp;·&nbsp; PARIS 2026
+    </div>
+    <div class="back-diamond" style="font-size:10pt;margin-top:6mm;">◆ ◆ ◆</div>
+  </div>
+</div>
+
+</body>
+</html>

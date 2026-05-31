@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GENUARY 2026 - VICTOR FERNEL</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+
+<!-- 31 sketch files, one per day -->
+  <script src="sketches/day01.js"></script>
+  <script src="sketches/day02.js"></script>
+  <script src="sketches/day03.js"></script>
+  <script src="sketches/day04.js"></script>
+  <script src="sketches/day05.js"></script>
+  <script src="sketches/day06.js"></script>
+  <script src="sketches/day07.js"></script>
+  <script src="sketches/day08.js"></script>
+  <script src="sketches/day09.js"></script>
+  <script src="sketches/day10.js"></script>
+  <script src="sketches/day11.js"></script>
+  <script src="sketches/day12.js"></script>
+  <script src="sketches/day13.js"></script>
+  <script src="sketches/day14.js"></script>
+  <script src="sketches/day15.js"></script>
+  <script src="sketches/day16.js"></script>
+  <script src="sketches/day17.js"></script>
+  <script src="sketches/day18.js"></script>
+  <script src="sketches/day19.js"></script>
+  <script src="sketches/day20.js"></script>
+  <script src="sketches/day21.js"></script>
+  <script src="sketches/day22.js"></script>
+  <script src="sketches/day23.js"></script>
+  <script src="sketches/day24.js"></script>
+  <script src="sketches/day25.js"></script>
+  <script src="sketches/day26.js"></script>
+  <script src="sketches/day27.js"></script>
+  <script src="sketches/day28.js"></script>
+  <script src="sketches/day29.js"></script>
+  <script src="sketches/day30.js"></script>
+  <script src="sketches/day31.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:  #020408;
+  --c:   #00ffcc;
+  --m:   #ff0066;
+  --y:   #ffee00;
+  --w:   #e0f0ff;
+  --dim: #0d2030;
+  --br:  rgba(0,255,204,.18);
+  --br2: rgba(255,0,102,.18);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--c);
+  font-family: 'Share Tech Mono', monospace;
+  overflow-x: hidden;
+}
+
+/* Scanlines overlay */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,255,204,.01) 3px, rgba(0,255,204,.01) 4px);
+  pointer-events: none; z-index: 9999;
+}
+
+/* Vignette */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.6) 100%);
+  pointer-events: none; z-index: 9998;
+}
+
+#bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+/* ---------- HEADER ---------- */
+header {
+  position: relative; z-index: 10;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 0;
+  border-bottom: 1px solid var(--br);
+  padding: 0;
+}
+
+.header-left {
+  grid-row: 1 / 3;
+  padding: 2rem;
+  border-right: 1px solid var(--br);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.header-right {
+  padding: 1.5rem 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.header-bottom {
+  grid-column: 2;
+  padding: 0 2rem 1.5rem;
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+}
+
+.big-title {
+  font-size: clamp(5rem, 14vw, 11rem);
+  line-height: .85;
+  letter-spacing: -.01em;
+  color: var(--c);
+  text-shadow: 0 0 40px rgba(0,255,204,.4), 0 0 80px rgba(0,255,204,.15);
+}
+.big-title b { color: var(--m); font-weight: 400; text-shadow: 0 0 40px rgba(255,0,102,.4); }
+
+.header-year {
+  font-size: 5rem;
+  color: rgba(0,255,204,.08);
+  letter-spacing: .1em;
+  line-height: 1;
+  user-select: none;
+}
+
+.meta-item {
+  font-size: .5rem;
+  letter-spacing: .2em;
+  color: rgba(0,255,204,.4);
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+.meta-item::before { content: ''; display: block; width: 4px; height: 4px; background: var(--c); border-radius: 50%; }
+
+.progress-track {
+  display: flex; gap: 2px; align-items: center;
+}
+.pt-dot {
+  width: 4px; height: 4px; background: rgba(0,255,204,.2); border-radius: 50%;
+}
+.pt-dot.active { background: var(--c); box-shadow: 0 0 4px var(--c); }
+
+/* ---------- WEEK DIVIDERS ---------- */
+.week-divider {
+  position: relative; z-index: 10;
+  display: flex; align-items: stretch;
+  height: 44px;
+  border-top: 1px solid var(--br2);
+  border-bottom: 1px solid var(--br2);
+  margin: 0;
+  overflow: hidden;
+}
+.wd-num {
+  width: 80px; flex-shrink: 0;
+  background: var(--m);
+  color: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .7rem; letter-spacing: .2em;
+}
+.wd-label {
+  flex: 1; padding: 0 1.5rem;
+  display: flex; align-items: center;
+  font-size: .55rem; letter-spacing: .25em;
+  color: rgba(255,0,102,.7);
+  border-left: 1px solid var(--br2);
+}
+.wd-days {
+  padding: 0 1.5rem;
+  display: flex; align-items: center;
+  font-size: .5rem; letter-spacing: .15em;
+  color: rgba(0,255,204,.35);
+  border-left: 1px solid var(--br2);
+}
+
+/* ---------- LAYOUT ZONES ---------- */
+
+/* Week 1: large feature left + 2x3 grid right */
+.zone-w1 {
+  position: relative; z-index: 10;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 200px 200px;
+  gap: 2px;
+}
+.z1-feature { grid-column: 1; grid-row: 1 / 3; }
+.z1-a { grid-column: 2; grid-row: 1; }
+.z1-b { grid-column: 3; grid-row: 1; }
+.z1-c { grid-column: 2; grid-row: 2; }
+.z1-d { grid-column: 3; grid-row: 2; }
+
+/* Week 2: 3 equal top + 1 wide + 2 small bottom */
+.zone-w2 {
+  position: relative; z-index: 10;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 180px 180px;
+  gap: 2px;
+}
+.z2-a { grid-column: 1; }
+.z2-b { grid-column: 2; }
+.z2-c { grid-column: 3; }
+.z2-wide { grid-column: 1 / 3; }
+.z2-d { grid-column: 3; }
+
+/* Week 3: tall feature right + 3 stacked left */
+.zone-w3 {
+  position: relative; z-index: 10;
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  grid-template-rows: 130px 130px 130px;
+  gap: 2px;
+}
+.z3-a { grid-column: 1; grid-row: 1; }
+.z3-b { grid-column: 2; grid-row: 1; }
+.z3-c { grid-column: 1; grid-row: 2; }
+.z3-d { grid-column: 2; grid-row: 2; }
+.z3-e { grid-column: 1; grid-row: 3; }
+.z3-f { grid-column: 2; grid-row: 3; }
+.z3-feature { grid-column: 3; grid-row: 1 / 4; }
+.z3-extra { grid-column: 1 / 3; }
+
+/* Week 4: diagonal-ish - 2 large + scattered */
+.zone-w4 {
+  position: relative; z-index: 10;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 180px 180px 180px;
+  gap: 2px;
+}
+.z4-feature { grid-column: 1 / 3; grid-row: 1 / 3; }
+.z4-a { grid-column: 3; }
+.z4-b { grid-column: 4; }
+.z4-c { grid-column: 3; }
+.z4-d { grid-column: 4; }
+.z4-e { grid-column: 1; }
+.z4-f { grid-column: 2; }
+.z4-wide { grid-column: 3 / 5; }
+
+/* ---------- CARDS ---------- */
+.card {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  background: #06080f;
+  border: 1px solid transparent;
+  transition: border-color .15s;
+  min-height: 120px;
+}
+.card:hover { border-color: var(--c); }
+.card:hover .card-overlay { opacity: 1; transform: translateY(0); }
+.card:hover .cn { background: var(--c); color: var(--bg); }
+
+.card-thumb {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  opacity: 0; transition: opacity .5s;
+  position: absolute; inset: 0;
+}
+.card-thumb.ready { opacity: 1; }
+
+.card-spin {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .4rem; color: rgba(0,255,204,.25); letter-spacing: .2em;
+  animation: sp 2s ease-in-out infinite;
+  transition: opacity .3s;
+}
+.card-spin.done { opacity: 0; pointer-events: none; }
+@keyframes sp { 0%,100%{opacity:.25} 50%{opacity:.6} }
+
+.cn {
+  position: absolute; top: 6px; left: 6px; z-index: 2;
+  font-size: .48rem; letter-spacing: .1em;
+  background: rgba(0,255,204,.12); color: var(--c);
+  padding: 2px 5px; border: 1px solid rgba(0,255,204,.2);
+  transition: all .15s;
+}
+
+.card-overlay {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
+  background: linear-gradient(transparent, rgba(2,4,8,.96));
+  padding: .8rem .6rem .5rem;
+  opacity: 0; transform: translateY(3px);
+  transition: opacity .15s, transform .15s;
+}
+.co-title {
+  font-size: .58rem; color: var(--c); letter-spacing: .1em;
+  margin-bottom: 2px; text-shadow: 0 0 6px var(--c);
+}
+.co-prompt { font-size: .42rem; color: rgba(224,240,255,.5); line-height: 1.4; }
+.co-tag { font-size: .38rem; color: var(--m); letter-spacing: .1em; margin-top: 2px; }
+
+/* ---------- MODAL ---------- */
+.modal {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  flex-direction: column; align-items: center;
+  justify-content: flex-start; overflow-y: auto;
+  background: rgba(2,4,8,.96);
+}
+.modal.open { display: flex; }
+.modal-inner {
+  width: 100%; max-width: 660px; margin: 0 auto;
+  min-height: 100vh; display: flex; flex-direction: column;
+  border-left: 1px solid var(--br); border-right: 1px solid var(--br);
+}
+.modal-bar {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 1.2rem 1.5rem .8rem;
+  border-bottom: 1px solid var(--br); background: var(--bg); gap: 1rem;
+}
+.md-day    { font-size: .55rem; color: var(--m); letter-spacing: .2em; margin-bottom: .2rem; }
+.md-title  { font-size: 1.1rem; color: var(--c); letter-spacing: .1em; text-shadow: 0 0 12px rgba(0,255,204,.4); margin-bottom: .25rem; }
+.md-plabel { font-size: .5rem; color: rgba(224,240,255,.4); letter-spacing: .06em; }
+.md-prompt { font-size: .62rem; color: rgba(224,240,255,.7); letter-spacing: .04em; }
+.modal-ctrl { display: flex; gap: .4rem; flex-shrink: 0; }
+.mbtn {
+  background: none; cursor: pointer;
+  font-family: inherit; font-size: .55rem; letter-spacing: .12em;
+  padding: .3rem .7rem; border: 1px solid var(--br);
+  color: rgba(0,255,204,.65); transition: all .12s;
+}
+.mbtn:hover { border-color: var(--c); color: var(--c); }
+.mbtn.exit  { border-color: var(--br2); color: var(--m); }
+.mbtn.exit:hover { background: var(--m); color: var(--bg); }
+.modal-canvas {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  padding: 1.2rem; background: #000; min-height: 380px;
+}
+.modal-canvas canvas {
+  max-width: min(600px, 90vw) !important;
+  max-height: min(600px, 56vh) !important;
+  display: block !important;
+}
+.modal-nav {
+  display: flex; align-items: center;
+  padding: .65rem 1.5rem; border-top: 1px solid var(--br);
+  background: var(--bg); gap: .8rem;
+}
+.mp { flex: 1; height: 1px; background: var(--dim); }
+.mp-fill { height: 100%; background: var(--c); transition: width .3s; }
+.mc { font-size: .55rem; color: rgba(0,255,204,.4); letter-spacing: .1em; white-space: nowrap; }
+
+/* ---------- CHATBOT ---------- */
+#chat-btn {
+  position: fixed; bottom: 1.8rem; right: 1.8rem; z-index: 600;
+  width: 50px; height: 50px; border-radius: 50%;
+  background: #060d14; border: 2px solid var(--c);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 18px rgba(0,255,204,.4), 0 0 40px rgba(0,255,204,.15);
+  animation: cpulse 3s ease-in-out infinite; transition: transform .15s;
+}
+#chat-btn:hover { transform: scale(1.08); }
+@keyframes cpulse {
+  0%,100% { box-shadow: 0 0 18px rgba(0,255,204,.4), 0 0 40px rgba(0,255,204,.15); }
+  50%      { box-shadow: 0 0 28px rgba(0,255,204,.7), 0 0 60px rgba(0,255,204,.3); }
+}
+
+#chat-panel {
+  position: fixed; bottom: 5.2rem; right: 1.8rem; z-index: 600;
+  width: min(360px, 92vw); height: 460px;
+  background: rgba(2,4,8,.97); border: 1px solid var(--br);
+  display: none; flex-direction: column;
+  box-shadow: 0 0 40px rgba(0,255,204,.1);
+}
+#chat-panel.open { display: flex; }
+
+.ch { padding: .65rem 1rem; border-bottom: 1px solid var(--br); display: flex; justify-content: space-between; align-items: center; }
+.ch-name { font-size: .58rem; color: var(--c); letter-spacing: .15em; }
+.ch-status {
+  font-size: .48rem; color: rgba(0,255,204,.4); letter-spacing: .1em;
+  display: flex; align-items: center; gap: .35rem;
+}
+.ch-status::before { content: ''; display: block; width: 5px; height: 5px; background: var(--c); border-radius: 50%; animation: blink 1.5s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.15} }
+.ch-close { background: none; border: none; color: var(--m); cursor: pointer; font-family: inherit; font-size: .8rem; padding: 0 .3rem; }
+
+#chat-msgs {
+  flex: 1; overflow-y: auto; padding: .7rem;
+  display: flex; flex-direction: column; gap: .5rem;
+  scrollbar-width: thin; scrollbar-color: var(--br) transparent;
+}
+.msg { max-width: 90%; padding: .45rem .65rem; font-size: .55rem; line-height: 1.65; letter-spacing: .04em; }
+.msg.bot  { align-self: flex-start; background: rgba(0,255,204,.05); border-left: 2px solid var(--c); color: var(--w); }
+.msg.user { align-self: flex-end; background: rgba(255,0,102,.07); border-right: 2px solid var(--m); color: var(--w); text-align: right; }
+.msg .mf  { font-size: .42rem; letter-spacing: .15em; margin-bottom: .18rem; opacity: .6; }
+
+.chat-input-row { display: flex; border-top: 1px solid var(--br); }
+#chat-input {
+  flex: 1; background: none; border: none;
+  padding: .65rem .75rem; color: var(--c);
+  font-family: inherit; font-size: .58rem; letter-spacing: .06em; outline: none;
+}
+#chat-input::placeholder { color: rgba(0,255,204,.22); }
+#chat-send {
+  background: none; border: none; border-left: 1px solid var(--br);
+  padding: .65rem .85rem; color: var(--c); cursor: pointer; font-size: .65rem; transition: background .12s;
+}
+#chat-send:hover { background: rgba(0,255,204,.08); }
+
+/* ---------- FOOTER ---------- */
+footer {
+  position: relative; z-index: 10;
+  margin-top: 4rem; padding: 1.2rem 2rem;
+  border-top: 1px solid var(--br);
+  display: flex; gap: 2rem; flex-wrap: wrap;
+  font-size: .5rem; letter-spacing: .15em; color: rgba(0,255,204,.25);
+}
+
+@media (max-width: 700px) {
+  .zone-w1, .zone-w2, .zone-w3, .zone-w4 { grid-template-columns: 1fr 1fr; grid-template-rows: none; }
+  .z1-feature, .z2-wide, .z3-feature, .z4-feature { grid-column: 1 / 3; grid-row: auto; }
+  .big-title { font-size: 4rem; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<header>
+  <div class="header-left">
+    <div class="big-title">GEN<b>UARY</b><br>20<b>26</b></div>
+  </div>
+  <div class="header-right">
+    <div class="header-year">31</div>
+    <div class="meta-item">VICTOR FERNEL</div>
+    <div class="meta-item">IIM DIGITAL SCHOOL</div>
+    <div class="meta-item">P5.JS / GLSL</div>
+  </div>
+  <div class="header-bottom">
+    <div class="meta-item">31 SKETCHES</div>
+    <div class="meta-item">JANUARY 2026</div>
+    <div class="meta-item">CYBERPUNK</div>
+    <div class="progress-track" id="pt"></div>
+  </div>
+</header>
+
+<!-- Modal -->
+<div class="modal" id="modal">
+  <div class="modal-inner">
+    <div class="modal-bar">
+      <div>
+        <div class="md-day"   id="md-day">DAY 01</div>
+        <div class="md-title" id="md-title">LIQUID DROP</div>
+        <div class="md-plabel">GENUARY PROMPT</div>
+        <div class="md-prompt" id="md-prompt">One color, one shape.</div>
+      </div>
+      <div class="modal-ctrl">
+        <button class="mbtn exit" id="close-btn">&#10005;</button>
+      </div>
+    </div>
+    <div class="modal-canvas" id="sketch-container"></div>
+    <div class="modal-nav">
+      <button class="mbtn" id="prev-btn">&#8592;</button>
+      <div class="mp"><div class="mp-fill" id="mp-fill"></div></div>
+      <span class="mc" id="mc">01/31</span>
+      <button class="mbtn" id="next-btn">&#8594;</button>
+    </div>
+  </div>
+</div>
+
+<!-- Chatbot -->
+<button id="chat-btn" title="GENUARY-BOT">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00ffcc" stroke-width="2">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+  </svg>
+</button>
+<div id="chat-panel">
+  <div class="ch">
+    <div>
+      <div class="ch-name">GENUARY-BOT v2.6</div>
+      <div class="ch-status">ONLINE - 31 SKETCHES</div>
+    </div>
+    <button class="ch-close" id="chat-close">&#10005;</button>
+  </div>
+  <div id="chat-msgs"></div>
+  <div class="chat-input-row">
+    <input id="chat-input" type="text" placeholder="day 13 / aurora / favori / help" maxlength="100" autocomplete="off">
+    <button id="chat-send">&#9654;</button>
+  </div>
+</div>
+
+<footer>
+  <span>GENUARY 2026</span>
+  <span>31 SKETCHES P5.JS</span>
+  <span>VICTOR FERNEL</span>
+  <span>IIM DIGITAL SCHOOL</span>
+</footer>
+
+<script>
+const DATA = [
+  { title: "LIQUID DROP", prompt: "One color, one shape.", tag: "1 color" },
+  { title: "ORBITAL SYSTEM", prompt: "Twelve principles of animation.", tag: "animation" },
+  { title: "CRYSTAL GROWTH", prompt: "Fibonacci forever.", tag: "fibonacci" },
+  { title: "LOWRES TERRAIN", prompt: "Lowres.", tag: "noise" },
+  { title: "STORM VORTEX", prompt: "Write without a font.", tag: "vortex" },
+  { title: "LIGHTS ON/OFF", prompt: "Lights on/off.", tag: "toggle" },
+  { title: "MAGNETIC FIELD", prompt: "Boolean algebra.", tag: "field" },
+  { title: "DEEP SEA", prompt: "A City.", tag: "ocean" },
+  { title: "CYCLIC AUTOMATON", prompt: "Crazy automaton.", tag: "automaton" },
+  { title: "SPIDER WEB", prompt: "Polar coordinates.", tag: "polar" },
+  { title: "CODE RAIN", prompt: "Quine.", tag: "recursive" },
+  { title: "LAVA CELLS", prompt: "Boxes only.", tag: "convection" },
+  { title: "BLACK HOLE", prompt: "Self portrait.", tag: "black hole" },
+  { title: "TRUCHET TILES", prompt: "Everything fits perfectly.", tag: "truchet" },
+  { title: "WORMHOLE", prompt: "Invisible object.", tag: "portal" },
+  { title: "ORDER TO CHAOS", prompt: "Order and disorder.", tag: "chaos" },
+  { title: "ISLAMIC STARS", prompt: "Wallpaper group.", tag: "p6m" },
+  { title: "LIGHTNING", prompt: "Unexpected path.", tag: "fractal" },
+  { title: "RULE 110", prompt: "16x16", tag: "wolfram" },
+  { title: "LISSAJOUS", prompt: "One line.", tag: "curve" },
+  { title: "SOLAR FLARE", prompt: "Bauhaus Poster.", tag: "plasma" },
+  { title: "MOUNTAIN TOPO", prompt: "Pen plotter ready.", tag: "plotter" },
+  { title: "TRANSPARENCY", prompt: "Transparency.", tag: "blend" },
+  { title: "KALEIDOSCOPE", prompt: "Perfectionist's nightmare.", tag: "mandala" },
+  { title: "MERCURY DROPS", prompt: "Organic Geometry.", tag: "mercury" },
+  { title: "FRACTAL TREE", prompt: "Recursive Grids.", tag: "l-system" },
+  { title: "SUPERNOVA", prompt: "Lifeform.", tag: "supernova" },
+  { title: "CRYSTAL CSS", prompt: "No canvas - HTML only.", tag: "css only" },
+  { title: "FLUID VORTEX", prompt: "Genetic evolution.", tag: "particles" },
+  { title: "AURORA BOREALIS", prompt: "It's not a bug, it's a feature.", tag: "aurora" },
+  { title: "GLSL SHADER", prompt: "GLSL day.", tag: "glsl" },
+];
+
+const sketches = [
+  sketch_01,
+  sketch_02,
+  sketch_03,
+  sketch_04,
+  sketch_05,
+  sketch_06,
+  sketch_07,
+  sketch_08,
+  sketch_09,
+  sketch_10,
+  sketch_11,
+  sketch_12,
+  sketch_13,
+  sketch_14,
+  sketch_15,
+  sketch_16,
+  sketch_17,
+  sketch_18,
+  sketch_19,
+  sketch_20,
+  sketch_21,
+  sketch_22,
+  sketch_23,
+  sketch_24,
+  sketch_25,
+  sketch_26,
+  sketch_27,
+  sketch_28,
+  sketch_29,
+  sketch_30,
+  sketch_31
+];
+
+// Progress track in header
+const pt = document.getElementById('pt');
+for (let i = 0; i < 31; i++) {
+  const d = document.createElement('div');
+  d.className = 'pt-dot';
+  d.id = 'ptd' + i;
+  pt.appendChild(d);
+}
+
+// Background: animated grid + floating particles
+(function() {
+  const cv = document.getElementById('bg-canvas');
+  const ctx = cv.getContext('2d');
+  let W, H, pts = [];
+
+  function resize() {
+    W = cv.width  = window.innerWidth;
+    H = cv.height = window.innerHeight;
+    pts = [];
+    for (let i = 0; i < 50; i++) {
+      pts.push({
+        x: Math.random() * W, y: Math.random() * H,
+        vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3,
+        hue: Math.random() < .6 ? 180 : 320
+      });
+    }
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  let f = 0;
+
+  function draw() {
+    f++;
+    ctx.clearRect(0, 0, W, H);
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(0,255,204,0.036)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < W; x += 55) ctx.strokeRect(x, 0, 55, H);
+    for (let y = 0; y < H; y += 55) ctx.strokeRect(0, y, W, 55);
+
+    // Diagonal accents
+    ctx.strokeStyle = 'rgba(255,0,102,0.02)';
+    for (let i = -15; i < 35; i++) {
+      ctx.beginPath();
+      ctx.moveTo(i * 80, 0);
+      ctx.lineTo(i * 80 + H, H);
+      ctx.stroke();
+    }
+
+    // Floating dots
+    pts.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 1.2, 0, Math.PI * 2);
+      ctx.fillStyle = p.hue === 180 ? 'rgba(0,255,204,0.35)' : 'rgba(255,0,102,0.35)';
+      ctx.fill();
+    });
+
+    // Occasional glitch line
+    if (f % 110 < 2) {
+      ctx.fillStyle = 'rgba(0,255,204,0.05)';
+      ctx.fillRect(0, Math.random() * H, W, Math.random() * 2 + 1);
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+})();
+
+// Build card HTML
+function makeCard(idx) {
+  const d = DATA[idx];
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.innerHTML =
+    '<img id="th-' + idx + '" class="card-thumb" alt="">' +
+    '<div class="card-spin" id="sp-' + idx + '">&block;&square;&block;</div>' +
+    '<div class="cn">' + String(idx + 1).padStart(2, '0') + '</div>' +
+    '<div class="card-overlay">' +
+      '<div class="co-title">' + d.title + '</div>' +
+      '<div class="co-prompt">' + d.prompt + '</div>' +
+      '<div class="co-tag">' + d.tag + '</div>' +
+    '</div>';
+  el.onclick = () => openSketch(idx);
+  return el;
+}
+
+// Layout: 4 weeks with distinct asymmetric zones
+function buildGallery() {
+  const root = document.body;
+
+  function weekDivider(num, label, days) {
+    const div = document.createElement('div');
+    div.className = 'week-divider';
+    div.innerHTML =
+      '<div class="wd-num">W' + num + '</div>' +
+      '<div class="wd-label">' + label + '</div>' +
+      '<div class="wd-days">DAY ' + days + '</div>';
+    return div;
+  }
+
+  // Week 1 (days 0-6): large feature left + 2x2 grid right + 3 extra become 5-7
+  // Feature: day 0 (LIQUID DROP), then days 1-6
+  root.appendChild(weekDivider(1, 'FOUNDATIONS', '01 - 07'));
+  const z1 = document.createElement('div');
+  z1.className = 'zone-w1';
+  const indices1 = [0, 1, 2, 3, 4];
+  z1.appendChild(Object.assign(makeCard(indices1[0]), { className: 'card z1-feature' }));
+  ['z1-a','z1-b','z1-c','z1-d'].forEach((cls, i) => {
+    z1.appendChild(Object.assign(makeCard(indices1[i + 1]), { className: 'card ' + cls }));
+  });
+  root.appendChild(z1);
+
+  // Days 5-6 in a 2-col strip
+  const strip1 = document.createElement('div');
+  strip1.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:2px;position:relative;z-index:10;';
+  [5, 6].forEach(i => strip1.appendChild(makeCard(i)));
+  root.appendChild(strip1);
+
+  // Week 2 (days 7-13): 3 top + wide + small
+  root.appendChild(weekDivider(2, 'SYSTEMS', '08 - 14'));
+  const z2 = document.createElement('div');
+  z2.className = 'zone-w2';
+  z2.appendChild(Object.assign(makeCard(7),  { className: 'card z2-a' }));
+  z2.appendChild(Object.assign(makeCard(8),  { className: 'card z2-b' }));
+  z2.appendChild(Object.assign(makeCard(9),  { className: 'card z2-c' }));
+  z2.appendChild(Object.assign(makeCard(10), { className: 'card z2-wide' }));
+  z2.appendChild(Object.assign(makeCard(11), { className: 'card z2-d' }));
+  root.appendChild(z2);
+  // Day 13 - Black Hole as mini feature
+  const strip2 = document.createElement('div');
+  strip2.style.cssText = 'position:relative;z-index:10;height:180px;';
+  strip2.appendChild(Object.assign(makeCard(12), { className: 'card', style: 'height:100%;width:100%;' }));
+  root.appendChild(strip2);
+
+  // Week 3 (days 14-20): 3x2 grid left + tall feature right
+  root.appendChild(weekDivider(3, 'FORM & SPACE', '15 - 21'));
+  const z3 = document.createElement('div');
+  z3.className = 'zone-w3';
+  const i3 = [13, 14, 15, 16, 17, 18, 19];
+  ['z3-a','z3-b','z3-c','z3-d','z3-e','z3-f','z3-feature'].forEach((cls, i) => {
+    z3.appendChild(Object.assign(makeCard(i3[i]), { className: 'card ' + cls }));
+  });
+  root.appendChild(z3);
+
+  // Week 4 (days 21-30): 2x2 feature + scattered
+  root.appendChild(weekDivider(4, 'EXTREMES', '22 - 31'));
+  const z4 = document.createElement('div');
+  z4.className = 'zone-w4';
+  z4.appendChild(Object.assign(makeCard(20), { className: 'card z4-feature' }));
+  ['z4-a','z4-b','z4-c','z4-d','z4-e','z4-f','z4-wide'].forEach((cls, i) => {
+    z4.appendChild(Object.assign(makeCard(21 + i), { className: 'card ' + cls }));
+  });
+  root.appendChild(z4);
+
+  // Day 30 (aurora) standalone
+  const strip4 = document.createElement('div');
+  strip4.style.cssText = 'position:relative;z-index:10;height:200px;';
+  strip4.appendChild(Object.assign(makeCard(30), { className: 'card', style: 'height:100%;width:100%;' }));
+  root.appendChild(strip4);
+}
+
+buildGallery();
+
+// Modal logic
+let currentP5 = null, currentDay = 0;
+const modal = document.getElementById('modal');
+const sc = document.getElementById('sketch-container');
+
+function openSketch(i) {
+  if (currentP5) { currentP5.remove(); currentP5 = null; }
+  sc.innerHTML = '';
+  currentDay = i;
+  document.getElementById('md-day').textContent    = 'DAY ' + String(i + 1).padStart(2, '0');
+  document.getElementById('md-title').textContent  = DATA[i].title;
+  document.getElementById('md-prompt').textContent = DATA[i].prompt;
+  document.getElementById('mc').textContent        = String(i + 1).padStart(2, '0') + '/31';
+  document.getElementById('mp-fill').style.width   = ((i + 1) / 31 * 100) + '%';
+
+  // Update progress dots
+  for (let j = 0; j < 31; j++) {
+    const dot = document.getElementById('ptd' + j);
+    if (dot) dot.className = 'pt-dot' + (j === i ? ' active' : '');
+  }
+
+  modal.classList.add('open');
+  currentP5 = new p5(sketches[i], sc);
+}
+
+document.getElementById('close-btn').onclick = () => {
+  modal.classList.remove('open');
+  if (currentP5) { currentP5.remove(); currentP5 = null; }
+  sc.innerHTML = '';
+};
+document.getElementById('next-btn').onclick = () => openSketch((currentDay + 1) % 31);
+document.getElementById('prev-btn').onclick = () => openSketch((currentDay + 30) % 31);
+
+document.addEventListener('keydown', e => {
+  if (!modal.classList.contains('open')) return;
+  if (e.key === 'ArrowRight') openSketch((currentDay + 1) % 31);
+  if (e.key === 'ArrowLeft')  openSketch((currentDay + 30) % 31);
+  if (e.key === 'Escape')     document.getElementById('close-btn').click();
+});
+
+// Thumbnail generator: run each sketch offscreen for 55 frames then capture
+(function() {
+  const queue = Array.from({ length: 31 }, (_, i) => i);
+  let busy = false;
+
+  function next() {
+    if (busy || !queue.length) return;
+    const i = queue.shift();
+    busy = true;
+
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'position:fixed;left:-660px;top:-660px;width:600px;height:600px;pointer-events:none;overflow:hidden;';
+    document.body.appendChild(wrap);
+
+    let frames = 0, inst;
+    try { inst = new p5(sketches[i], wrap); } catch(e) { cleanup(); return; }
+
+    function capture() {
+      try {
+        const cv = wrap.querySelector('canvas');
+        if (!cv) { cleanup(); return; }
+        const url = cv.toDataURL('image/jpeg', .82);
+        const img = document.getElementById('th-' + i);
+        const sp  = document.getElementById('sp-' + i);
+        if (img) { img.src = url; img.onload = () => img.classList.add('ready'); }
+        if (sp)  sp.classList.add('done');
+      } catch(e) {}
+      cleanup();
+    }
+
+    function cleanup() {
+      try { if (inst) inst.remove(); } catch(e) {}
+      try { document.body.removeChild(wrap); } catch(e) {}
+      busy = false;
+      setTimeout(next, 72);
+    }
+
+    function tick() {
+      frames++;
+      if (frames >= 55) { capture(); return; }
+      requestAnimationFrame(tick);
+    }
+
+    setTimeout(() => requestAnimationFrame(tick), 110);
+  }
+
+  setTimeout(next, 900);
+})();
+
+
+const BOT = {
+  days: [
+    { n:1,  k:["1","liquid","drop","water","one color","shape"], r:"DAY 01 - LIQUID DROP. Prompt: 'One color, one shape.' Huit couches de surface tension en cyan, animees par bruit Perlin. La contrainte oblige a trouver la profondeur dans la simplicite." },
+    { n:2,  k:["2","orbital","orbit","planet","gravity","system"], r:"DAY 02 - ORBITAL SYSTEM. Prompt: 'Twelve principles of animation.' Quatre corps en orbite avec trails gravitationnels. Newton remplace Disney." },
+    { n:3,  k:["3","crystal","growth","hex","fibonacci"], r:"DAY 03 - CRYSTAL GROWTH. Prompt: 'Fibonacci forever.' Croissance hexagonale depuis un germe, reglee par la spirale de Fibonacci. Cliquer pour regenerer." },
+    { n:4,  k:["4","lowres","terrain","pixel","noise"], r:"DAY 04 - LOWRES TERRAIN. Prompt: 'Lowres.' Grille 20x20, bruit Perlin 3D. La basse resolution revele les patterns." },
+    { n:5,  k:["5","storm","vortex","tornado","wind","eye"], r:"DAY 05 - STORM VORTEX. Prompt: 'Write without a font.' 400 particules sur orbites spiralantes. Aucun glyphe. Seulement la force." },
+    { n:6,  k:["6","light","lamp","click","toggle","on","off"], r:"DAY 06 - LIGHTS ON/OFF. Prompt: 'Lights on/off.' Clic pour basculer entre chaleur ambree et reseau cyan. Clique sur le canvas." },
+    { n:7,  k:["7","magnetic","field","pole","dipole"], r:"DAY 07 - MAGNETIC FIELD. Prompt: 'Boolean algebra.' Deux poles, 36 lignes de champ par integration numerique. L'algebre booleenne devient physique." },
+    { n:8,  k:["8","sea","deep","jellyfish","ocean","biolum"], r:"DAY 08 - DEEP SEA. Prompt: 'A City.' La ville la plus dense est l'ocean profond. Meduses, radiolaires, bulles. La lumiere ne descend pas." },
+    { n:9,  k:["9","automaton","cyclic","cell","rule"], r:"DAY 09 - CYCLIC AUTOMATON. Prompt: 'Crazy automaton.' 4 etats, regel: avancer si 3 voisins sont dans l'etat suivant. Cliquer pour randomiser." },
+    { n:10, k:["10","spider","web","polar","radial","vibr"], r:"DAY 10 - SPIDER WEB. Prompt: 'Polar coordinates.' Structure radiale + spirale en resonance. Des gouttes de rosee apparaissent." },
+    { n:11, k:["11","code","rain","matrix","quine","source"], r:"DAY 11 - CODE RAIN. Prompt: 'Quine.' Le source du sketch tombe en colonnes - chaque colonne pioche dans le code lui-meme." },
+    { n:12, k:["12","lava","convection","hexagonal","heat"], r:"DAY 12 - LAVA CELLS. Prompt: 'Boxes only.' Cellules de Benard - hexagones de lave, chaleur au centre, refroidissement en bordure." },
+    { n:13, k:["13","black","hole","accretion","doppler","jet"], r:"DAY 13 - BLACK HOLE. Prompt: 'Self portrait.' Visible seulement par son effet. Decalage Doppler reel: bleu a gauche, rouge a droite. Jets relativistes en violet. C'est mon sketch prefere." },
+    { n:14, k:["14","truchet","tile","arc","connexion"], r:"DAY 14 - TRUCHET TILES. Prompt: 'Everything fits perfectly.' Tuiles 15x15, chaque arc se connecte exactement a son voisin." },
+    { n:15, k:["15","wormhole","tunnel","portal","singularity"], r:"DAY 15 - WORMHOLE. Prompt: 'Invisible object.' 28 anneaux en perspective convergent vers la singularite." },
+    { n:16, k:["16","order","chaos","ring","concentric"], r:"DAY 16 - ORDER TO CHAOS. Prompt: 'Order and disorder.' 65 anneaux: parfaits a l'exterieur, deformes par bruit a l'interieur." },
+    { n:17, k:["17","islamic","star","p6m","hex","symmetry"], r:"DAY 17 - ISLAMIC STARS. Prompt: 'Wallpaper group.' Symetrie p6m - le plus haut degre de symetrie plane. Etoiles a 6 branches." },
+    { n:18, k:["18","lightning","fractal","branch","electric"], r:"DAY 18 - LIGHTNING. Prompt: 'Unexpected path.' Subdivision mid-point recursive, profondeur 8. Nouvelles decharges toutes les 35 frames." },
+    { n:19, k:["19","rule","110","wolfram","automaton","1d"], r:"DAY 19 - RULE 110. Prompt: '16x16.' Regle 110 de Wolfram - Turing-complete. La complexite emerge d'une regle a 3 bits." },
+    { n:20, k:["20","lissajous","line","knot","curve"], r:"DAY 20 - LISSAJOUS. Prompt: 'One line.' Une ligne continue. Ratios de frequence qui derivent: huit-de-chiffre, noeud, quasi-cercle." },
+    { n:21, k:["21","solar","flare","corona","plasma","loop"], r:"DAY 21 - SOLAR FLARE. Prompt: 'Bauhaus Poster.' Cinq boucles d'eruption solaire. Spicules, granulation, couronne." },
+    { n:22, k:["22","mountain","topo","contour","plotter"], r:"DAY 22 - MOUNTAIN TOPO. Prompt: 'Pen plotter ready.' Vue aerienne, 40 niveaux de contour par marching squares. Zero fill." },
+    { n:23, k:["23","transparency","blob","overlay"], r:"DAY 23 - TRANSPARENCY. Prompt: 'Transparency.' Huit ellipses a 22% d'opacite. Melange optique aux intersections." },
+    { n:24, k:["24","kaleidoscope","mandala","fold","drift"], r:"DAY 24 - KALEIDOSCOPE. Prompt: 'Perfectionist nightmare.' 8 axes de symetrie avec drift imperceptible. Aucun petal identique." },
+    { n:25, k:["25","mercury","metal","liquid","chrome","drop"], r:"DAY 25 - MERCURY DROPS. Prompt: 'Organic Geometry.' Spheres de metal liquide avec reflets speculaires et glow neon." },
+    { n:26, k:["26","tree","branch","fractal","l-system"], r:"DAY 26 - FRACTAL TREE. Prompt: 'Recursive Grids.' L-system recursif profondeur 10. Branches qui oscillent. Les tips pulsent en cyan." },
+    { n:27, k:["27","supernova","explosion","nebula","shockwave"], r:"DAY 27 - SUPERNOVA. Prompt: 'Lifeform.' Collapse, explosion, onde de choc, debris, nebuleuse. Cycle de 180 frames." },
+    { n:28, k:["28","crystal","css","shard","html","div"], r:"DAY 28 - CRYSTAL CSS. Prompt: 'No canvas.' Divs clip-pathed en triangles autour de graines. CSS pur et setInterval." },
+    { n:29, k:["29","vortex","fluid","water","spiral","particles"], r:"DAY 29 - FLUID VORTEX. Prompt: 'Genetic evolution.' 600 particules dans un double vortex. Deux equations, complexite emergente." },
+    { n:30, k:["30","aurora","borealis","northern lights","curtain"], r:"DAY 30 - AURORA BOREALIS. Prompt: 'Not a bug.' Huit rideaux de lumiere avec reflets sur neige. Les aurores sont de beaux bugs atmospheriques." },
+    { n:31, k:["31","glsl","shader","webgl","gpu","fragment"], r:"DAY 31 - GLSL SHADER. Prompt: 'GLSL day.' Fragment shader WebGL complet. Ripples, spirales, domain warping. Zero boucle en JavaScript." }
+  ],
+  general: {
+    hi:    ["GENUARY-BOT EN LIGNE. 31 SKETCHES P5.JS. POSE UNE QUESTION.", "CONNEXION. JE CONNAIS CHAQUE SKETCH. QUE VEUX-TU SAVOIR?"],
+    fav:   "MON PREFERE EST LE DAY 13 - BLACK HOLE. Le prompt demandait un autoportrait. J'ai fait un trou noir: visible seulement par son effet. Disque d'accretion avec vrai decalage Doppler, jets relativistes. C'est le portrait le plus honnete.",
+    about: "GENUARY 2026: 31 jours, 31 prompts officiels, 31 sketches P5.JS en esthetique cyberpunk. Direction artistique: seulement des formes et des animations. Aucun texte dans les sketches.",
+    tech:  "Stack: P5.JS pour tout. WebGL pour le Day 31 (GLSL natif). CSS pur + setInterval pour le Day 28. Chaque sketch est un fichier JS separe dans /sketches/.",
+    help:  "Commandes: 'day N', nom du sketch ('black hole', 'aurora', 'vortex'), 'favori', 'about', 'tech'."
+  }
+};
+
+function botReply(input) {
+  const raw = input.toLowerCase().trim();
+  if (!raw) return null;
+  if (/^(hi|hello|bonjour|salut|hey|coucou)/.test(raw)) return BOT.general.hi[Math.floor(Math.random() * BOT.general.hi.length)];
+  if (/fav|prefere|best|meilleur/.test(raw))   return BOT.general.fav;
+  if (/about|projet|genuary|qu'est/.test(raw)) return BOT.general.about;
+  if (/tech|stack|p5|javascript|code/.test(raw)) return BOT.general.tech;
+  if (/help|aide|command/.test(raw))           return BOT.general.help;
+  const m = raw.match(/(?:day|jour|sketch)\s*(\d+)|^(\d+)$/);
+  if (m) {
+    const n = parseInt(m[1] || m[2]);
+    if (n >= 1 && n <= 31) return BOT.days[n - 1].r;
+    return "31 sketches au total. Essaie un nombre entre 1 et 31.";
+  }
+  for (const d of BOT.days)
+    for (const k of d.k)
+      if (raw.includes(k)) return d.r;
+  return ["Inconnu. Essaie 'day 13', 'aurora', 'vortex', ou 'favori'.",
+          "Pas reconnu. Tape 'help' pour les commandes.",
+          "Essaie un nom de sketch: 'black hole', 'spider web', 'lightning'."][Math.floor(Math.random() * 3)];
+}
+
+
+// Chatbot UI
+const chatBtn   = document.getElementById('chat-btn');
+const chatPanel = document.getElementById('chat-panel');
+const chatClose = document.getElementById('chat-close');
+const chatInput = document.getElementById('chat-input');
+const chatSend  = document.getElementById('chat-send');
+const chatMsgs  = document.getElementById('chat-msgs');
+
+function addMsg(text, role) {
+  const d = document.createElement('div');
+  d.className = 'msg ' + role;
+  const s = document.createElement('div');
+  s.className = 'mf';
+  s.textContent = role === 'bot' ? 'GENUARY-BOT' : 'YOU';
+  const t = document.createElement('div');
+  t.textContent = text;
+  d.appendChild(s);
+  d.appendChild(t);
+  chatMsgs.appendChild(d);
+  chatMsgs.scrollTop = chatMsgs.scrollHeight;
+  return d;
+}
+
+function typeMsg(text) {
+  const d = addMsg('', 'bot');
+  const td = d.querySelector('div:last-child');
+  let i = 0;
+  const iv = setInterval(() => {
+    td.textContent += text[i];
+    i++;
+    chatMsgs.scrollTop = chatMsgs.scrollHeight;
+    if (i >= text.length) clearInterval(iv);
+  }, 16);
+}
+
+chatBtn.onclick = () => {
+  chatPanel.classList.toggle('open');
+  if (chatPanel.classList.contains('open') && chatMsgs.children.length === 0) {
+    setTimeout(() => typeMsg(BOT.general.hi[0]), 300);
+  }
+};
+chatClose.onclick = () => chatPanel.classList.remove('open');
+
+function handleSend() {
+  const val = chatInput.value.trim();
+  if (!val) return;
+  addMsg(val, 'user');
+  chatInput.value = '';
+  const typing = addMsg('...', 'bot');
+  setTimeout(() => {
+    chatMsgs.removeChild(typing);
+    typeMsg(botReply(val) || BOT.general.hi[0]);
+  }, 350 + Math.random() * 250);
+}
+
+chatSend.onclick = handleSend;
+chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleSend(); });
+</script>
+</body>
+</html>

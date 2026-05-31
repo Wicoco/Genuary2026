@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>BIG ZINE PAGES — VICTOR FERNEL</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  @page { size: A5; margin: 0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Share Tech Mono',monospace; }
+  .page { width:148mm; height:210mm; page-break-after:always; position:relative; overflow:hidden; display:flex; flex-direction:column; }
+
+  /* ── QR CODE PAGE ── */
+  .p-qr { background:#020408; color:#00ffcc; justify-content:center; align-items:center; }
+  .qr-grid { position:absolute; inset:0; background-image:linear-gradient(rgba(0,255,204,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,204,.05) 1px,transparent 1px); background-size:7mm 7mm; }
+  .cc { position:absolute; width:10mm; height:10mm; border-color:rgba(0,255,204,.5); border-style:solid; }
+  .cc-tl{top:4mm;left:4mm;border-width:1px 0 0 1px;} .cc-tr{top:4mm;right:4mm;border-width:1px 1px 0 0;}
+  .cc-bl{bottom:4mm;left:4mm;border-width:0 0 1px 1px;} .cc-br{bottom:4mm;right:4mm;border-width:0 1px 1px 0;}
+  .qr-content { position:relative; z-index:2; text-align:center; padding:8mm; }
+  .qr-eyebrow { font-size:5pt; letter-spacing:.25em; color:rgba(0,255,204,.5); margin-bottom:5mm; }
+  .qr-box { width:55mm; height:55mm; border:2px solid rgba(0,255,204,.5); margin:0 auto 5mm; display:flex; align-items:center; justify-content:center; background:rgba(0,255,204,.03); position:relative; }
+  .qr-box-inner { font-size:5pt; color:rgba(0,255,204,.4); letter-spacing:.15em; text-align:center; line-height:1.8; }
+  .qr-corner { position:absolute; width:6mm; height:6mm; border-color:#00ffcc; border-style:solid; }
+  .qc-tl{top:2mm;left:2mm;border-width:2px 0 0 2px;} .qc-tr{top:2mm;right:2mm;border-width:2px 2px 0 0;}
+  .qc-bl{bottom:2mm;left:2mm;border-width:0 0 2px 2px;} .qc-br{bottom:2mm;right:2mm;border-width:0 2px 2px 0;}
+  .qr-url { font-size:7pt; color:#ffee00; letter-spacing:.08em; margin-bottom:2mm; }
+  .qr-sub { font-size:5.5pt; color:rgba(0,255,204,.5); letter-spacing:.12em; }
+  .qr-title { font-family:'Bebas Neue',sans-serif; font-size:28pt; color:#00ffcc; letter-spacing:.05em; text-shadow:0 0 12px rgba(0,255,204,.4); margin-bottom:3mm; }
+  .qr-title span{color:#ff0066;}
+  .qr-divider { width:40mm; height:1px; background:rgba(0,255,204,.3); margin:3mm auto; }
+
+  /* ── ABOUT ME PAGE ── */
+  .p-about { background:#f4f0e6; padding:10mm; }
+  .ab-top-bar { height:4px; background:linear-gradient(90deg,#c8200a,#18140e,#c8200a); margin-bottom:6mm; }
+  .ab-tag { font-size:5pt; letter-spacing:.25em; color:#c8200a; margin-bottom:2mm; }
+  .ab-title { font-family:'Bebas Neue',sans-serif; font-size:30pt; color:#18140e; letter-spacing:.03em; line-height:.9; margin-bottom:5mm; }
+  .ab-portrait-box { width:35mm; height:40mm; border:1.5px solid #ccc4b0; float:right; margin-left:4mm; margin-bottom:3mm; display:flex; align-items:center; justify-content:center; background:#e8e4dc; }
+  .ab-portrait-label { font-size:4.5pt; color:#8c8070; letter-spacing:.1em; text-align:center; line-height:1.8; }
+  .ab-body { font-size:7pt; line-height:1.8; color:#4a4438; }
+  .ab-body strong { color:#18140e; }
+  .ab-clear { clear:both; }
+  .ab-info-grid { display:grid; grid-template-columns:1fr 1fr; gap:3mm; margin-top:5mm; }
+  .ab-info-item { border-left:2px solid #c8200a; padding-left:2.5mm; }
+  .ab-info-label { font-size:4.5pt; letter-spacing:.2em; color:#c8200a; margin-bottom:.5mm; }
+  .ab-info-value { font-size:6.5pt; color:#18140e; }
+  .ab-bottom-bar { position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg,#c8200a,#18140e,#c8200a); }
+
+  /* ── ABOUT PROJECT PAGE ── */
+  .p-project { background:#020408; color:#00ffcc; padding:10mm; }
+  .proj-grid { position:absolute; inset:0; background-image:linear-gradient(rgba(0,255,204,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,204,.04) 1px,transparent 1px); background-size:6mm 6mm; }
+  .proj-content { position:relative; z-index:2; }
+  .proj-tag { font-size:5pt; letter-spacing:.25em; color:rgba(0,255,204,.5); margin-bottom:2mm; }
+  .proj-title { font-family:'Bebas Neue',sans-serif; font-size:26pt; color:#00ffcc; letter-spacing:.04em; line-height:.9; margin-bottom:1mm; text-shadow:0 0 12px rgba(0,255,204,.4); }
+  .proj-title span { color:#ff0066; }
+  .proj-subtitle { font-size:6pt; letter-spacing:.2em; color:rgba(0,255,204,.55); margin-bottom:5mm; }
+  .proj-body { font-size:6.5pt; line-height:1.8; color:rgba(224,240,255,.7); margin-bottom:4mm; }
+  .proj-body em { color:#ffee00; font-style:normal; }
+  .proj-stats { display:grid; grid-template-columns:1fr 1fr 1fr; gap:2mm; margin:4mm 0; }
+  .stat { border:1px solid rgba(0,255,204,.25); padding:2.5mm; text-align:center; }
+  .stat-num { font-family:'Bebas Neue',sans-serif; font-size:20pt; color:#00ffcc; line-height:1; text-shadow:0 0 8px rgba(0,255,204,.4); }
+  .stat-label { font-size:4pt; letter-spacing:.15em; color:rgba(0,255,204,.5); margin-top:.5mm; }
+  .proj-tech { margin-top:3mm; }
+  .proj-tech-label { font-size:4.5pt; letter-spacing:.2em; color:#ff0066; margin-bottom:2mm; }
+  .tech-pills { display:flex; flex-wrap:wrap; gap:1.5mm; }
+  .t-pill { font-size:4.5pt; border:1px solid rgba(0,255,204,.3); padding:1mm 2mm; color:rgba(0,255,204,.7); }
+
+  /* ── SPLASH PAGE ── */
+  .p-splash { background:#020408; justify-content:center; align-items:center; }
+  .sp-content { position:relative; z-index:2; text-align:center; padding:10mm; }
+  .sp-year { font-size:5pt; letter-spacing:.35em; color:rgba(0,255,204,.4); margin-bottom:4mm; }
+  .sp-logo { font-family:'Bebas Neue',sans-serif; font-size:55pt; letter-spacing:.04em; line-height:.85; color:#00ffcc; text-shadow:0 0 25px rgba(0,255,204,.55),0 0 60px rgba(0,255,204,.25); margin-bottom:4mm; }
+  .sp-logo span { color:#ff0066; text-shadow:0 0 25px rgba(255,0,102,.55); }
+  .sp-divider { width:50mm; height:1px; background:linear-gradient(90deg,transparent,#00ffcc,transparent); margin:4mm auto; }
+  .sp-tagline { font-size:7pt; letter-spacing:.15em; color:rgba(0,255,204,.6); margin-bottom:6mm; line-height:1.7; }
+  .sp-enter { display:inline-block; font-size:6pt; letter-spacing:.3em; border:1px solid rgba(0,255,204,.5); padding:2mm 6mm; color:#00ffcc; margin-top:4mm; }
+  .sp-sub { font-size:5pt; color:rgba(0,255,204,.3); letter-spacing:.15em; margin-top:5mm; }
+
+  @media print { .page { page-break-after:always; } }
+</style>
+</head>
+<body>
+
+<!-- ── QR CODE PAGE ── -->
+<div class="page p-qr">
+  <div class="qr-grid"></div>
+  <div class="cc cc-tl"></div><div class="cc cc-tr"></div>
+  <div class="cc cc-bl"></div><div class="cc cc-br"></div>
+  <div class="qr-content">
+    <div class="qr-eyebrow">// SCAN TO VISIT THE LIVE SITE</div>
+    <div class="qr-title">GEN<span>26</span></div>
+    <div class="qr-box">
+      <div class="qc-tl qr-corner"></div><div class="qc-tr qr-corner"></div>
+      <div class="qc-bl qr-corner"></div><div class="qc-br qr-corner"></div>
+      <div class="qr-box-inner">
+        COLLER LE<br>QR CODE ICI<br><br>
+        <span style="font-size:4pt;opacity:.6">généré sur<br>qr-code-generator.com</span>
+      </div>
+    </div>
+    <div class="qr-divider"></div>
+    <div class="qr-url">[URL DU SITE ICI]</div>
+    <div class="qr-sub">VICTOR FERNEL &nbsp;·&nbsp; GENUARY 2026 &nbsp;·&nbsp; 31 SKETCHES P5.JS</div>
+  </div>
+</div>
+
+<!-- ── ABOUT ME ── -->
+<div class="page p-about">
+  <div class="ab-top-bar"></div>
+  <div class="ab-tag">// ABOUT ME</div>
+  <div class="ab-title">VICTOR<br>FERNEL</div>
+
+  <div class="ab-portrait-box">
+    <div class="ab-portrait-label">PHOTO<br>ICI</div>
+  </div>
+
+  <div class="ab-body">
+    Étudiant en <strong>Chef de Projet Digital</strong> à l'IIM Digital School (Paris), 4ème année. En alternance à l'<strong>INSERM</strong> comme assistant fonctionnel & développeur graphique.
+    <br><br>
+    Passionné de <strong>creative coding</strong>, de p5.js, de hardware et de jeux vidéo. Ce projet Genuary 2026 représente 31 jours de création intensive avec une esthétique <strong>cyberpunk</strong>.
+  </div>
+  <div class="ab-clear"></div>
+
+  <div class="ab-info-grid">
+    <div class="ab-info-item">
+      <div class="ab-info-label">ÉCOLE</div>
+      <div class="ab-info-value">IIM Digital School</div>
+    </div>
+    <div class="ab-info-item">
+      <div class="ab-info-label">LOCALISATION</div>
+      <div class="ab-info-value">Chaville, Île-de-France</div>
+    </div>
+    <div class="ab-info-item">
+      <div class="ab-info-label">EMAIL</div>
+      <div class="ab-info-value">victor.fernel@edu.devinci.fr</div>
+    </div>
+    <div class="ab-info-item">
+      <div class="ab-info-label">GITHUB</div>
+      <div class="ab-info-value">github.com/Wicoco</div>
+    </div>
+    <div class="ab-info-item">
+      <div class="ab-info-label">STACK</div>
+      <div class="ab-info-value">JS · P5 · Python · GLSL</div>
+    </div>
+    <div class="ab-info-item">
+      <div class="ab-info-label">ANNÉE</div>
+      <div class="ab-info-value">2026</div>
+    </div>
+  </div>
+  <div class="ab-bottom-bar"></div>
+</div>
+
+<!-- ── ABOUT PROJECT ── -->
+<div class="page p-project">
+  <div class="proj-grid"></div>
+  <div class="proj-content">
+    <div class="proj-tag">// ABOUT THE PROJECT</div>
+    <div class="proj-title">GENUARY<br><span>2026</span></div>
+    <div class="proj-subtitle">31 JOURS · 31 PROMPTS · 31 SKETCHES EN P5.JS</div>
+    <div class="proj-body">
+      <em>Genuary</em> est un challenge de creative coding annuel: un prompt par jour en janvier, une oeuvre générée par code. 31 contraintes créatives, 31 interprétations radicales.
+      <br><br>
+      Direction artistique: <em>cyberpunk</em>. Chaque sketch est une pièce visuelle seulement des formes, des animations et des effets. De la goutte d'eau liquide au trou noir avec accrétion.
+      <br><br>
+      Le site est interactif: chaque sketch tourne en direct dans le navigateur, et un <em>chatbot non-IA</em> connaît tous les 31 projets.
+    </div>
+    <div class="proj-stats">
+      <div class="stat"><div class="stat-num">31</div><div class="stat-label">SKETCHES</div></div>
+      <div class="stat"><div class="stat-num">31</div><div class="stat-label">JOURS</div></div>
+      <div class="stat"><div class="stat-num">1</div><div class="stat-label">SHADER GLSL</div></div>
+    </div>
+    <div class="proj-tech">
+      <div class="proj-tech-label">// TECH STACK</div>
+      <div class="tech-pills">
+        <span class="t-pill">P5.JS</span>
+        <span class="t-pill">GLSL/WEBGL</span>
+        <span class="t-pill">CSS ANIMATIONS</span>
+        <span class="t-pill">PERLIN NOISE</span>
+        <span class="t-pill">CELLULAR AUTOMATA</span>
+        <span class="t-pill">L-SYSTEMS</span>
+        <span class="t-pill">NON-AI CHATBOT</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SPLASH PAGE (bonus — peut être utilisée en couverture du big zine) ── -->
+<div class="page p-splash">
+  <div class="qr-grid"></div>
+  <div class="cc cc-tl"></div><div class="cc cc-tr"></div>
+  <div class="cc cc-bl"></div><div class="cc cc-br"></div>
+  <div class="sp-content">
+    <div class="sp-year">JANUARY 2026</div>
+    <div class="sp-logo">GEN<span>UARY</span><br>2026</div>
+    <div class="sp-divider"></div>
+    <div class="sp-tagline">
+      31 SKETCHES &nbsp;·&nbsp; P5.JS<br>
+      VICTOR FERNEL &nbsp;·&nbsp; IIM DIGITAL SCHOOL
+    </div>
+    <div class="sp-enter">[ ENTER ]</div>
+    <div class="sp-sub">CREATIVE CODING &nbsp;·&nbsp; CYBERPUNK AESTHETIC</div>
+  </div>
+</div>
+
+</body>
+</html>

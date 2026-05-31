@@ -1,0 +1,5 @@
+// Day 31 - GLSL SHADER
+// Prompt: GLSL day.
+// Tag: glsl
+
+var sketch_31 = (p)=>{let sh;const VERT=`attribute vec3 aPosition;void main(){gl_Position=vec4(aPosition,1.0);}`;const FRAG=`precision mediump float;uniform float uTime;uniform vec2 uRes;void main(){vec2 uv=(gl_FragCoord.xy-uRes*0.5)/min(uRes.x,uRes.y);float r=length(uv);float a=atan(uv.y,uv.x);float t=uTime;float ripple=sin(r*14.0-t*2.8)*0.5+0.5;float spiral=sin(a*7.0+r*9.0-t*1.6)*0.5+0.5;float domain=sin(uv.x*9.0+sin(uv.y*7.0+t*1.2))*0.5+0.5;float warp=sin(uv.x*uv.y*30.0+t)*0.5+0.5;vec3 col=vec3(spiral*ripple,domain*0.4+ripple*0.6,sin(r*6.0-t*1.1)*0.5+0.5);col=mix(col,vec3(warp,spiral,domain),0.3);col=pow(col,vec3(0.75));float vign=1.0-smoothstep(0.38,0.85,r);gl_FragColor=vec4(col*vign,1.0);}`;p.setup=()=>{p.createCanvas(600,600,p.WEBGL);try{sh=p.createShader(VERT,FRAG);}catch(e){}};p.draw=()=>{if(!sh){p.background(10,5,30);return;}p.shader(sh);sh.setUniform('uTime',p.millis()/1000);sh.setUniform('uRes',[600,600]);p.noStroke();p.plane(600,600);}};
